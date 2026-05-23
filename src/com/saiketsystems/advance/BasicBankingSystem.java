@@ -13,7 +13,7 @@ public class BasicBankingSystem {
 		accountList.add(accounts);
 	}
 
-	public static void mina(String[] args) {
+	public static void main(String[] args) {
 		BasicBankingSystem banking = new BasicBankingSystem();
 		Scanner scan = new Scanner(System.in);
 
