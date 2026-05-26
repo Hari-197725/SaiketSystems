@@ -6,13 +6,11 @@ import java.util.Scanner;
 public class TemperatureConverter {
 
 	public double celsiusToFahrenheit(double temperature) {
-		double fahrenheit = (9.0 / 5.0) * temperature + 32;
-		return fahrenheit;
+		return (9.0 / 5.0) * temperature + 32;
 	}
 
 	public double fahrenheitToCelsius(double temperature) {
-		double celsius = (5.0 / 9.0) * (temperature - 32);
-		return celsius;
+		return (5.0 / 9.0) * (temperature - 32);
 	}
 
 	public static void main(String[] args) {
@@ -25,13 +23,13 @@ public class TemperatureConverter {
 				System.out.println("Select which conversion you want\n1. Celsius -> Fahrenheit\n2. Fahrenheit -> Celsius\n3. Exit Converter");
 				int option = scan.nextInt();
 
-				System.out.println("Enter your Temperature");
-				double temperature = scan.nextDouble();
-
 				if (option == 3) {
 					System.out.println("Bye! See you again");
 					break;
 				}
+
+				System.out.println("Enter your Temperature");
+				double temperature = scan.nextDouble();
 
 				switch (option) {
 				case 1:

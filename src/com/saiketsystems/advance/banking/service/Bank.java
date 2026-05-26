@@ -17,15 +17,13 @@ public class Bank {
 	private final Map<Integer, BankAccount> accounts = new HashMap<>();
 	private int nextAccountNumber = 10001;
 
-	public BankAccount createSavingsAccount(String accountHolderName, double initialDeposit)
-			throws InvalidAmountException {
+	public BankAccount createSavingsAccount(String accountHolderName, double initialDeposit) throws InvalidAmountException {
 		BankAccount account = new SavingsAccount(accountHolderName, initialDeposit, nextAccountNumber++);
 		accounts.put(account.getAccountNumber(), account);
 		return account;
 	}
 
-	public BankAccount createCheckingAccount(String accountHolderName, double initialDeposit)
-			throws InvalidAmountException {
+	public BankAccount createCheckingAccount(String accountHolderName, double initialDeposit) throws InvalidAmountException {
 		BankAccount account = new CheckingAccount(accountHolderName, initialDeposit, nextAccountNumber++);
 		accounts.put(account.getAccountNumber(), account);
 		return account;

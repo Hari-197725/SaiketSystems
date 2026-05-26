@@ -1,6 +1,7 @@
 package com.saiketsystems.advance.banking.model;
 
 import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -14,13 +15,11 @@ public abstract class BankAccount implements OperableAccount {
 	protected double balance;
 	protected final List<Transaction> transactionHistory;
 
-	protected BankAccount(String accountHolderName, double initialDeposit, int accountNumber)
-			throws InvalidAmountException {
+	protected BankAccount(String accountHolderName, double initialDeposit, int accountNumber) throws InvalidAmountException {
 		validatePositiveAmount(initialDeposit, "Initial deposit");
 		if (initialDeposit < getMinimumInitialDeposit()) {
-			throw new InvalidAmountException(String.format(
-					"Initial deposit must be at least $%.2f for %s accounts.",
-					getMinimumInitialDeposit(), getAccountType()));
+			throw new InvalidAmountException(String.format("Initial deposit must be at least $%.2f for %s accounts.", getMinimumInitialDeposit(),
+					getAccountType()));
 		}
 
 		this.accountHolderName = accountHolderName;
@@ -46,9 +45,8 @@ public abstract class BankAccount implements OperableAccount {
 		validatePositiveAmount(amount, "Withdrawal");
 
 		if (balance - amount < getMinimumBalance()) {
-			throw new InsufficientFundsException(String.format(
-					"Insufficient funds. Available: $%.2f (minimum balance $%.2f must remain).",
-					balance - getMinimumBalance(), getMinimumBalance()));
+			throw new InsufficientFundsException(String.format("Insufficient funds. Available: $%.2f (minimum balance $%.2f must remain).", balance
+					- getMinimumBalance(), getMinimumBalance()));
 		}
 
 		balance -= amount;

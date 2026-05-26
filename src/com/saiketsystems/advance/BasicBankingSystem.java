@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 import com.saiketsystems.advance.banking.exception.AccountNotFoundException;
 import com.saiketsystems.advance.banking.exception.BankingException;
-import com.saiketsystems.advance.banking.exception.InsufficientFundsException;
 import com.saiketsystems.advance.banking.exception.InvalidAmountException;
 import com.saiketsystems.advance.banking.model.BankAccount;
 import com.saiketsystems.advance.banking.model.Transaction;
@@ -139,8 +138,7 @@ public class BasicBankingSystem {
 		BankAccount account = promptForAccount(scan);
 		List<Transaction> history = account.getTransactionHistory();
 
-		System.out.printf("Transaction history for account #%d (%s):%n",
-				account.getAccountNumber(), account.getAccountHolderName());
+		System.out.printf("Transaction history for account #%d (%s):%n", account.getAccountNumber(), account.getAccountHolderName());
 
 		if (history.isEmpty()) {
 			System.out.println("No transactions recorded.");
@@ -179,10 +177,7 @@ public class BasicBankingSystem {
 	}
 
 	private void printAccountSummary(BankAccount account) {
-		System.out.printf("  Account #%d | %s | Holder: %s | Balance: $%.2f%n",
-				account.getAccountNumber(),
-				account.getAccountType(),
-				account.getAccountHolderName(),
-				account.getBalance());
+		System.out.printf("  Account #%d | %s | Holder: %s | Balance: $%.2f%n", account.getAccountNumber(), account.getAccountType(), account
+				.getAccountHolderName(), account.getBalance());
 	}
 }
