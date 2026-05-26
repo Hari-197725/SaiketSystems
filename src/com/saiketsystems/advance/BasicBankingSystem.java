@@ -1,48 +1,188 @@
 package com.saiketsystems.advance;
 
-import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import com.saiketsystems.advance.banking.exception.AccountNotFoundException;
+import com.saiketsystems.advance.banking.exception.BankingException;
+import com.saiketsystems.advance.banking.exception.InsufficientFundsException;
+import com.saiketsystems.advance.banking.exception.InvalidAmountException;
+import com.saiketsystems.advance.banking.model.BankAccount;
+import com.saiketsystems.advance.banking.model.Transaction;
+import com.saiketsystems.advance.banking.service.Bank;
+
 public class BasicBankingSystem {
 
-	List<CreateAccount> accountList = new ArrayList<>();
-
-	public void createAccount(String accountHolderName, double intialDeposit) {
-		CreateAccount accounts = new CreateAccount(accountHolderName, intialDeposit);
-		accountList.add(accounts);
-	}
+	private final Bank bank = new Bank();
 
 	public static void main(String[] args) {
-		BasicBankingSystem banking = new BasicBankingSystem();
+		BasicBankingSystem app = new BasicBankingSystem();
 		Scanner scan = new Scanner(System.in);
 
 		System.out.println("*******************");
-		System.out.println("Welcome to xyz Bank");
+		System.out.println("Welcome to Saiket Bank");
 		System.out.println("*******************");
-		System.out.println(
-				"What do you want to do: \n1.Create Account\2. Deposity Money\n3. Withdraw Money/4. Check Balance\n5. Transaction History\n6. Exit");
 
-		int option = scan.nextInt();
+		while (true) {
+			try {
+				app.printMenu();
+				int option = scan.nextInt();
+				scan.nextLine();
 
-		switch (option) {
-		case 1:
+				switch (option) {
+				case 1:
+					app.createAccount(scan);
+					break;
+				case 2:
+					app.depositMoney(scan);
+					break;
+				case 3:
+					app.withdrawMoney(scan);
+					break;
+				case 4:
+					app.checkBalance(scan);
+					break;
+				case 5:
+					app.viewTransactionHistory(scan);
+					break;
+				case 6:
+					app.listAllAccounts();
+					break;
+				case 7:
+					System.out.println("Thank you for banking with us. Goodbye!");
+					scan.close();
+					return;
+				default:
+					System.out.println("Invalid option! Please choose a number between 1 and 7.");
+				}
 
-			System.out.println("Enter your Account Holder Name");
-			String accountHolderName = scan.nextLine();
-
-			System.out.println("Enter your Intial Deposit");
-			double intialDeposit = scan.nextDouble();
-
-			banking.createAccount(accountHolderName, intialDeposit);
-			System.out.println("Account created Successfully");
-
-			break;
-
-		case 2:
-
-		default:
-			System.out.println("Invalid option! Please select option between 1 to 6");
+			} catch (InputMismatchException e) {
+				System.out.println("Error: Invalid input! Please enter a valid number.");
+				scan.nextLine();
+			} catch (BankingException e) {
+				System.out.println("Error: " + e.getMessage());
+			}
 		}
+	}
+
+	private void printMenu() {
+		System.out.println();
+		System.out.println("========== Banking Menu ==========");
+		System.out.println("1. Create Account");
+		System.out.println("2. Deposit Money");
+		System.out.println("3. Withdraw Money");
+		System.out.println("4. Check Balance");
+		System.out.println("5. Transaction History");
+		System.out.println("6. List All Accounts");
+		System.out.println("7. Exit");
+		System.out.println("==================================");
+		System.out.print("Select an option: ");
+	}
+
+	private void createAccount(Scanner scan) throws BankingException {
+		System.out.println("Select account type:\n1. Savings (min. deposit $500)\n2. Checking (min. deposit $100)");
+		int type = scan.nextInt();
+		scan.nextLine();
+
+		System.out.print("Enter account holder name: ");
+		String name = scan.nextLine().trim();
+		if (name.isEmpty()) {
+			throw new InvalidAmountException("Account holder name cannot be empty.");
+		}
+
+		System.out.print("Enter initial deposit: $");
+		double initialDeposit = scan.nextDouble();
+		scan.nextLine();
+
+		BankAccount account;
+		if (type == 1) {
+			account = bank.createSavingsAccount(name, initialDeposit);
+		} else if (type == 2) {
+			account = bank.createCheckingAccount(name, initialDeposit);
+		} else {
+			throw new InvalidAmountException("Invalid account type. Choose 1 for Savings or 2 for Checking.");
+		}
+
+		System.out.printf("Account created successfully!%n");
+		printAccountSummary(account);
+	}
+
+	private void depositMoney(Scanner scan) throws BankingException {
+		BankAccount account = promptForAccount(scan);
+		System.out.print("Enter deposit amount: $");
+		double amount = scan.nextDouble();
+		scan.nextLine();
+
+		account.deposit(amount);
+		System.out.printf("Deposit successful. New balance: $%.2f%n", account.getBalance());
+	}
+
+	private void withdrawMoney(Scanner scan) throws BankingException {
+		BankAccount account = promptForAccount(scan);
+		System.out.print("Enter withdrawal amount: $");
+		double amount = scan.nextDouble();
+		scan.nextLine();
+
+		account.withdraw(amount);
+		System.out.printf("Withdrawal successful. New balance: $%.2f%n", account.getBalance());
+	}
+
+	private void checkBalance(Scanner scan) throws AccountNotFoundException {
+		BankAccount account = promptForAccount(scan);
+		System.out.printf("Account #%d (%s)%n", account.getAccountNumber(), account.getAccountType());
+		System.out.printf("Holder: %s%n", account.getAccountHolderName());
+		System.out.printf("Current balance: $%.2f%n", account.getBalance());
+	}
+
+	private void viewTransactionHistory(Scanner scan) throws AccountNotFoundException {
+		BankAccount account = promptForAccount(scan);
+		List<Transaction> history = account.getTransactionHistory();
+
+		System.out.printf("Transaction history for account #%d (%s):%n",
+				account.getAccountNumber(), account.getAccountHolderName());
+
+		if (history.isEmpty()) {
+			System.out.println("No transactions recorded.");
+			return;
+		}
+
+		for (Transaction transaction : history) {
+			System.out.println(transaction);
+		}
+	}
+
+	private void listAllAccounts() {
+		List<BankAccount> accounts = bank.getAllAccounts();
+
+		if (accounts.isEmpty()) {
+			System.out.println("No accounts registered yet.");
+			return;
+		}
+
+		System.out.println("--- All Accounts ---");
+		for (BankAccount account : accounts) {
+			printAccountSummary(account);
+			System.out.println();
+		}
+	}
+
+	private BankAccount promptForAccount(Scanner scan) throws AccountNotFoundException {
+		if (!bank.hasAccounts()) {
+			throw new AccountNotFoundException("No accounts exist. Please create an account first.");
+		}
+
+		System.out.print("Enter account number: ");
+		int accountNumber = scan.nextInt();
+		scan.nextLine();
+		return bank.findAccount(accountNumber);
+	}
+
+	private void printAccountSummary(BankAccount account) {
+		System.out.printf("  Account #%d | %s | Holder: %s | Balance: $%.2f%n",
+				account.getAccountNumber(),
+				account.getAccountType(),
+				account.getAccountHolderName(),
+				account.getBalance());
 	}
 }
