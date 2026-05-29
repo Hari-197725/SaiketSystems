@@ -9,7 +9,7 @@ import com.saiketsystems.advance.banking.exception.BankingException;
 import com.saiketsystems.advance.banking.exception.InvalidAmountException;
 import com.saiketsystems.advance.banking.model.BankAccount;
 import com.saiketsystems.advance.banking.model.Transaction;
-import com.saiketsystems.advance.banking.service.Bank;
+import com.saiketsystems.advance.banking.Bank;
 
 public class BasicBankingSystem {
 

@@ -1,14 +1,12 @@
 package com.saiketsystems.advance.banking.model;
 
 import java.util.ArrayList;
-
-import java.util.Collections;
 import java.util.List;
 
 import com.saiketsystems.advance.banking.exception.InsufficientFundsException;
 import com.saiketsystems.advance.banking.exception.InvalidAmountException;
 
-public abstract class BankAccount implements OperableAccount {
+public abstract class BankAccount {
 
 	protected final int accountNumber;
 	protected String accountHolderName;
@@ -33,14 +31,14 @@ public abstract class BankAccount implements OperableAccount {
 
 	protected abstract double getMinimumInitialDeposit();
 
-	@Override
+	public abstract String getAccountType();
+
 	public void deposit(double amount) throws InvalidAmountException {
 		validatePositiveAmount(amount, "Deposit");
 		balance += amount;
 		recordTransaction(TransactionType.DEPOSIT, amount);
 	}
 
-	@Override
 	public void withdraw(double amount) throws InsufficientFundsException, InvalidAmountException {
 		validatePositiveAmount(amount, "Withdrawal");
 
@@ -53,22 +51,18 @@ public abstract class BankAccount implements OperableAccount {
 		recordTransaction(TransactionType.WITHDRAWAL, amount);
 	}
 
-	@Override
 	public double getBalance() {
 		return balance;
 	}
 
-	@Override
 	public List<Transaction> getTransactionHistory() {
-		return Collections.unmodifiableList(transactionHistory);
+		return new ArrayList<>(transactionHistory);
 	}
 
-	@Override
 	public String getAccountHolderName() {
 		return accountHolderName;
 	}
 
-	@Override
 	public int getAccountNumber() {
 		return accountNumber;
 	}

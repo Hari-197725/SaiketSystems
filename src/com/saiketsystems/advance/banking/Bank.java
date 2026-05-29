@@ -1,7 +1,6 @@
-package com.saiketsystems.advance.banking.service;
+package com.saiketsystems.advance.banking;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,7 @@ public class Bank {
 	}
 
 	public List<BankAccount> getAllAccounts() {
-		return Collections.unmodifiableList(new ArrayList<>(accounts.values()));
+		return new ArrayList<>(accounts.values());
 	}
 
 	public boolean hasAccounts() {

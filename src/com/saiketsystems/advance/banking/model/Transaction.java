@@ -1,6 +1,7 @@
 package com.saiketsystems.advance.banking.model;
 
 import java.time.LocalDateTime;
+
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
@@ -37,7 +38,6 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return String.format("[%s] %s: $%.2f | Balance after: $%.2f",
-				timestamp.format(FORMATTER), type, amount, balanceAfter);
+		return String.format("[%s] %s: $%.2f | Balance after: $%.2f", timestamp.format(FORMATTER), type, amount, balanceAfter);
 	}
 }
