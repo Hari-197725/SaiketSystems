@@ -1,16 +1,20 @@
 package com.saiketsystems.intermediate;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
 import com.saiketsystems.enums.TaskStatus;
 import com.saiketsystems.models.CreateTask;
+import com.saiketsystems.services.TaskManagement;
 
-public class ToDoListApplication {
+public class ToDoListApplication implements TaskManagement {
 
 	public static List<CreateTask> taskList = new ArrayList<>();
 
-	public void createTask(String title, String description, String dueDate) {
+	public void createTask(String title, String description, LocalDate dueDate) {
 		TaskStatus taskStatus = TaskStatus.fromCode(0);
 		CreateTask tasks = new CreateTask(title, description, taskStatus, dueDate);
 		taskList.add(tasks);
@@ -37,7 +41,11 @@ public class ToDoListApplication {
 		return null;
 	}
 
-	public void updateTask(CreateTask taskToUpdate, String description, int statusAsInt, String dueDate) {
+	public void updateTask(CreateTask taskToUpdate, String description, int statusAsInt, LocalDate dueDate) {
+		if (taskList.isEmpty()) {
+			System.out.println("No tasks are available!");
+		}
+
 		if (!description.trim().isEmpty()) {
 			taskToUpdate.setDescription(description);
 		}
@@ -45,12 +53,14 @@ public class ToDoListApplication {
 		TaskStatus status = TaskStatus.fromCode(statusAsInt);
 		taskToUpdate.setStatus(status);
 
-		if (!dueDate.trim().isEmpty()) {
-			taskToUpdate.setDuedate(dueDate);
-		}
+		taskToUpdate.setDuedate(dueDate);
 	}
 
 	public void delete(String id) {
+		if (taskList.isEmpty()) {
+			System.out.println("No tasks are available!");
+		}
+
 		CreateTask taskToDelete = findTaskById(id);
 
 		if (taskToDelete == null) {
@@ -62,60 +72,81 @@ public class ToDoListApplication {
 		System.out.println("Task deleted successfully!");
 	}
 
+	public void separator() {
+		System.out.println("--------------------------------------");
+	}
+
 	public static void main(String[] args) {
-		ToDoListApplication taskManagementSystem = new ToDoListApplication();
+		ToDoListApplication todo = new ToDoListApplication();
+
 		Scanner scan = new Scanner(System.in);
 
 		while (true) {
-			System.out.println("Choose what you want to do: ");
-			System.out.println("1. Create a New Task\n2. View All Tasks\n3. Update Task\n4. Delete Task\n5. Exit Task Mangement System");
-			int choice = scan.nextInt();
+			try {
 
-			scan.nextLine();
+				System.out.println("Choose what you want to do: ");
+				System.out.println("1. Create a New Task\n2. View All Tasks\n3. Update Task\n4. Delete Task\n5. Exit Task Mangement System");
+				int choice = scan.nextInt();
 
-			if (choice < 1 || choice > 5) {
-				System.out.println("You have selected out of range choice. Please choose from 1 to 5:");
-				continue;
-			}
+				scan.nextLine();
 
-			switch (choice) {
-			case 1: {
-				System.out.println("Enter task's title: ");
-				String title = scan.nextLine();
+				if (choice < 1 || choice > 5) {
+					System.out.println("You have selected out of range choice. Please choose from 1 to 5:");
+					continue;
+				}
 
-				System.out.println("Enter task's Description: ");
-				String description = scan.nextLine();
+				switch (choice) {
+				case 1: {
+					try {
 
-				System.out.println("Enter task's Due Date: ");
-				String duedate = scan.nextLine();
+						System.out.println("Enter task's title: ");
+						String title = scan.nextLine();
 
-				taskManagementSystem.createTask(title, description, duedate);
-				System.out.println("Task created successfully");
+						System.out.println("Enter task's Description: ");
+						String description = scan.nextLine();
 
-				break;
-			}
+						System.out.println("Enter task's Due Date: ");
+						String duedate = scan.nextLine();
+						LocalDate dueDate = CreateTask.parseDueDate(duedate);
 
-			case 2: {
-				taskManagementSystem.displayTasks();
-				break;
-			}
+						todo.createTask(title, description, dueDate);
+						System.out.println("Task created successfully");
 
-			case 3: {
-				while (true) {
-					System.out.println("These are all the current tasks: ");
-					taskManagementSystem.displayTasks();
+						todo.separator();
+
+					} catch (IllegalArgumentException e) {
+						System.out.println(e.getMessage());
+					}
+					break;
+				}
+
+				case 2: {
+					todo.displayTasks();
+					todo.separator();
+					break;
+				}
+
+				case 3: {
+					if (taskList.isEmpty()) {
+						System.out.println("No tasks are available!");
+						todo.separator();
+						continue;
+					}
+
+					System.out.println("These are the current tasks: ");
+					todo.displayTasks();
 
 					System.out.println("Enter Task ID to update: ");
 					String taskId = scan.nextLine();
 
-					CreateTask taskToUpdate = taskManagementSystem.findTaskById(taskId);
+					CreateTask taskToUpdate = todo.findTaskById(taskId);
 
 					if (taskToUpdate == null) {
 						System.out.println("Task with ID " + taskId + " not found!");
 						break;
 					}
 
-					System.out.println("Note to update:Use enter to separate fields \n(eg:- Description\nStatus\nDue Date)");
+					System.out.println("Note to update:Use enter to separate fields eg:- \nDescription\nStatus\nDue Date");
 					String description = scan.nextLine();
 
 					System.out.println("Enter your new Status:");
@@ -128,34 +159,44 @@ public class ToDoListApplication {
 					System.out.println("Enter Due Date to Update");
 					String dueDate = scan.nextLine();
 
-					taskManagementSystem.updateTask(taskToUpdate, description, statusAsInt, dueDate);
+					todo.updateTask(taskToUpdate, description, statusAsInt, CreateTask.parseDueDate(dueDate));
+					todo.separator();
 
 					break;
 				}
-			}
 
-			case 4: {
-				System.out.println("These are all the current tasks: ");
-				taskManagementSystem.displayTasks();
+				case 4: {
+					if (taskList.isEmpty()) {
+						System.out.println("No tasks are available!");
+						todo.separator();
+						continue;
+					}
 
-				System.out.println("Enter Task ID to delete: ");
-				String taskId = scan.nextLine();
-				taskManagementSystem.delete(taskId);
-				break;
-			}
+					System.out.println("These are all the current tasks: ");
+					todo.displayTasks();
 
-			case 5: {
-				System.out.println("Bye! See you again");
-				System.exit(0);
-				break;
-			}
+					System.out.println("Enter Task ID to delete: ");
+					String taskId = scan.nextLine();
+					todo.delete(taskId);
+					todo.separator();
 
-			default:
-				System.out.println("Invalid choice! Please enter 1-5");
+					break;
+				}
 
-				scan.close();
+				case 5: {
+					System.out.println("Bye! See you again");
+					System.exit(0);
+					break;
+				}
+
+				default:
+					System.out.println("Invalid choice! Please enter 1-5");
+					scan.close();
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Error: Invalid input! Please enter a valid number.");
+				scan.nextLine();
 			}
 		}
 	}
-
 }

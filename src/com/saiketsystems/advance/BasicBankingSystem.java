@@ -19,9 +19,9 @@ public class BasicBankingSystem {
 		BasicBankingSystem app = new BasicBankingSystem();
 		Scanner scan = new Scanner(System.in);
 
-		System.out.println("*******************");
+		System.out.println("**********************");
 		System.out.println("Welcome to Saiket Bank");
-		System.out.println("*******************");
+		System.out.println("**********************");
 
 		while (true) {
 			try {
