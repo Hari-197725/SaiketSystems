@@ -2,13 +2,12 @@ package com.saiketsystems.advance.banking.model;
 
 import com.saiketsystems.advance.banking.exception.InvalidAmountException;
 
-public class CheckingAccount extends BankAccount {
+public class CurrentAccount extends BankAccount {
 
 	private static final double MINIMUM_BALANCE = 0.0;
-	private static final double MINIMUM_INITIAL_DEPOSIT = 100.0;
+	private static final double MINIMUM_INITIAL_DEPOSIT = 5000.0;
 
-	public CheckingAccount(String accountHolderName, double initialDeposit, int accountNumber)
-			throws InvalidAmountException {
+	public CurrentAccount(String accountHolderName, double initialDeposit, int accountNumber) throws InvalidAmountException {
 		super(accountHolderName, initialDeposit, accountNumber);
 	}
 
@@ -24,6 +23,6 @@ public class CheckingAccount extends BankAccount {
 
 	@Override
 	public String getAccountType() {
-		return "Checking";
+		return "Current";
 	}
 }

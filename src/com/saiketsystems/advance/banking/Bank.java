@@ -8,7 +8,7 @@ import java.util.Map;
 import com.saiketsystems.advance.banking.exception.AccountNotFoundException;
 import com.saiketsystems.advance.banking.exception.InvalidAmountException;
 import com.saiketsystems.advance.banking.model.BankAccount;
-import com.saiketsystems.advance.banking.model.CheckingAccount;
+import com.saiketsystems.advance.banking.model.CurrentAccount;
 import com.saiketsystems.advance.banking.model.SavingsAccount;
 
 public class Bank {
@@ -22,8 +22,8 @@ public class Bank {
 		return account;
 	}
 
-	public BankAccount createCheckingAccount(String accountHolderName, double initialDeposit) throws InvalidAmountException {
-		BankAccount account = new CheckingAccount(accountHolderName, initialDeposit, nextAccountNumber++);
+	public BankAccount createCurrentAccount(String accountHolderName, double initialDeposit) throws InvalidAmountException {
+		BankAccount account = new CurrentAccount(accountHolderName, initialDeposit, nextAccountNumber++);
 		accounts.put(account.getAccountNumber(), account);
 		return account;
 	}

@@ -1,6 +1,7 @@
 package com.saiketsystems.basic;
 
 import java.util.Random;
+
 import java.util.Scanner;
 
 public class NumberGuessingGame {
