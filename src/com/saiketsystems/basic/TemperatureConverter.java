@@ -25,21 +25,24 @@ public class TemperatureConverter {
 				int option = scan.nextInt();
 
 				if (option == 3) {
-					System.out.println("Bye! See you again");
+					System.out.println("Bye! See you again (O-O)");
 					break;
 				}
 
-				System.out.println("Enter your Temperature");
-				double temperature = scan.nextDouble();
-
 				switch (option) {
-				case 1:
+				case 1: {
+					System.out.println("Enter your Temperature");
+					double temperature = scan.nextDouble();
 					System.out.printf("Temperature in Fahrenheit: %.1f%n", converter.celsiusToFahrenheit(temperature));
 					break;
+				}
 
-				case 2:
+				case 2: {
+					System.out.println("Enter your Temperature");
+					double temperature = scan.nextDouble();
 					System.out.printf("Temperature in Celsius: %.1f%n", converter.fahrenheitToCelsius(temperature));
 					break;
+				}
 
 				default:
 					System.out.println("Invalid choice! Please select 1, 2 or 3.");

@@ -109,7 +109,7 @@ public class BasicBankingSystem {
 
 	private void depositMoney() throws BankingException {
 		BankAccount account = promptForAccount();
-		System.out.print("Enter deposit amount: $");
+		System.out.print("Enter deposit amount: ₹");
 		double amount = scan.nextDouble();
 		scan.nextLine();
 
@@ -119,7 +119,7 @@ public class BasicBankingSystem {
 
 	private void withdrawMoney() throws BankingException {
 		BankAccount account = promptForAccount();
-		System.out.print("Enter withdrawal amount: $");
+		System.out.print("Enter withdrawal amount: ₹");
 		double amount = scan.nextDouble();
 		scan.nextLine();
 
